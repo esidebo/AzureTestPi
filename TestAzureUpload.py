@@ -11,9 +11,9 @@ successCount = 0
 failureCount = 0
 while True:
 	# Set the up required variables for Azure Iot Hub
-	AzureDeviceName = "TestPi"
-	AzureDeviceKey = "1Hfen5Do2lS+RgtCe8RftdfqzmpgmMbXOj0i8ucEk+A="
-	AzureHubName = "SPMOilMonitor"
+	AzureDeviceName = "YourDeviceName"
+	AzureDeviceKey = "YourDeviceKey"
+	AzureHubName = "YourAzureIoTHubName"
 
 	# while True:
 	# Acquire and format the time stamp
