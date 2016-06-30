@@ -1,3 +1,7 @@
+"""
+    An adaptation of the work done by Stepan Bechynsky
+    found at https://github.com/bechynsky/AzureIoTDeviceClientPY
+"""
 import hmac
 import base64
 import urllib.parse
@@ -40,7 +44,7 @@ class Device():
     def create_sas(self, timeout):
         urlToSign = urllib.parse.quote(self._url_to_sign, safe='') 
         
-        # current time +10 minutes
+        # current time + timeout (seconds)
         timestamp = int(time.time()) + timeout
 
         h = hmac.new(base64.b64decode(self._key), 
