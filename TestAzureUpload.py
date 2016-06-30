@@ -8,7 +8,6 @@ import sys
 import Device
 import time
 import datetime
-<<<<<<< HEAD
 # import json
 # import requests
 
@@ -33,20 +32,6 @@ print('Initial sas created: ' + device._sas)
 print('Started at: ' + str(datetime.datetime.utcnow()) + '  in seconds: ' + str(time.time()))
 
 while failureCount < 1:
-=======
-import json
-import requests
-
-successCount = 0
-failureCount = 0
-while True:
-	# Set the up required variables for Azure Iot Hub
-	AzureDeviceName = "YourDeviceName"
-	AzureDeviceKey = "YourDeviceKey"
-	AzureHubName = "YourAzureIoTHubName"
-
-	# while True:
->>>>>>> dc022cca655099424ab39092fb7da94611389172
 	# Acquire and format the time stamp
 	timeStamp = datetime.datetime.utcnow()
 	timeStamp_str = timeStamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
