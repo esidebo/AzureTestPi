@@ -64,5 +64,5 @@ class Device():
     	}
 
     	r = requests.post(self._base_url, data = message, headers=headers)
-    	
+        
     	return r.status_code

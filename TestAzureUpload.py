@@ -20,18 +20,16 @@ startTime = time.time()
 AzureDeviceName = "TestPi"
 AzureDeviceKey = "1Hfen5Do2lS+RgtCe8RftdfqzmpgmMbXOj0i8ucEk+A="
 AzureHubName = "SPMOilMonitor"
-sasTimeOut = 86400 # 24 hours
+sasTimeOut = 86400 #24 hours
 
-# Create the device object
+# Create the device object and get the initial sas
 device = Device.Device(AzureHubName.lower(), AzureDeviceName, AzureDeviceKey)
-# print('Initialized Device object')
-# print('Base url: ' + device._base_url)
 device.create_sas(sasTimeOut)
 print('Initial sas created: ' + device._sas)
 
 print('Started at: ' + str(datetime.datetime.utcnow()) + '  in seconds: ' + str(time.time()))
 
-while failureCount < 1:
+while True:
 	# Acquire and format the time stamp
 	timeStamp = datetime.datetime.utcnow()
 	timeStamp_str = timeStamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -41,28 +39,35 @@ while failureCount < 1:
 
 	# Create the data string
 	data = {'TimeStamp' : timeStamp_str, 'CPUTemp' : temp}
-	# print('Data: ' + str(data))
+
+	# calculate time since sas was created
 	currentTime = time.time()
 	timeElapsed = currentTime - startTime
-	# print('Time Elapsed: ' + str(timeElapsed))
 
+	# Create new sas if old one has expired
 	if timeElapsed > sasTimeOut:
 		device.create_sas(sasTimeOut)
 		print(timeStamp_str + '; Created new SAS: ' + device._sas)
 		startTime = currentTime
 
+	# Send the data to Azure
 	AzureSender = device.send(data)
-	if AzureSender == 204:
+
+	# Check for valid transmission
+	if AzureSender == 204: # Successful Post
 		successCount += 1
-		# print('Successful Upload')
-	else:
-		# print('Failure')
+
+	elif AzureSender == 401: # Failed Authorization - Redo sas
 		failureCount += 1
-		print('Failed at: ' + str(datetime.datetime.utcnow()) + '  in seconds: ' + str(time.time()))
-		# print('Old Sas: ' + device._sas)
-		# device.create_sas(sasTimeOut)
-		# print('New sas: ' + device._sas)
-
-
+		print(timeStamp_str + '; Error Code: ' + str(AzureSender) + '; Create new sas')
+		device.create_sas(sasTimeOut)
+		print('New sas: ' + device._sas)
+		print('Success Count: ' + str(successCount) + '; Failure Count: ' + str(failureCount))
+	
+	else: # Failed transmission, record code
+		failureCount += 1
+		print(timeStamp_str + '; Error Code: ' + str(AzureSender))
+		print('Success Count: ' + str(successCount) + '; Failure Count: ' + str(failureCount))
+		
 	# print(timeStamp_str + '; Success Count: ' + str(successCount) + '; Failure Count: ' + str(failureCount))
-	time.sleep(60) # 1Hz upload rate
+	time.sleep(30) # 1Hz upload rate
