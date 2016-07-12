@@ -19,3 +19,11 @@ This repository contains the files that will allow a raspberry pi to communicate
 - When setting the sas timeout (expiration time), there appears to be a 5 minute grace period. i.e. If the timeout is set to 0 seconds, the sas will work for the next 5 minutes.
 - It has been determined that there is no need to use json.dumps to encode the data string as json. The requests library will simply accept a json formated string
   - i.e. `python data = {'TimeStamp' : timeStamp_str, 'CPUTemp' : temp}`
+- It is not a problem to use a longer sas expiration time. A 24 hour sas has successfully been tested. Doing this can reduce the nubmer of connections needed to Azure, thus reducing data usage.
+
+## Recorded Error Codes
+The descriptions for the error codes has been taken from [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
+- 401: Unauthorized - Authentication is needed to get requested response
+  - This error is received when the sas is not valid
+- 503: Service Unavailable - The server is not ready to handle the request
+  - The origin of this error is at the server. The timing can not be predicted. This error means that the request did not go through.
