@@ -8,12 +8,14 @@ import sys
 import Device
 import time
 import datetime
+import traceback
 # import json
 # import requests
 
 
 successCount = 0 # not needed in production. Used for script testing.
 failureCount = 0 # not needed in production. Used for script testing.
+exceptionCount = 0 # not needed in production. Used for script testing.
 startTime = time.time()
 
 # Set the up required variables for Azure Iot Hub
@@ -51,7 +53,13 @@ while True:
 		startTime = currentTime
 
 	# Send the data to Azure
-	AzureSender = device.send(data)
+	try:
+		AzureSender = device.send(data)
+	except Exception as e:
+		print(timeStamp_str + '; Exception: %s' % e)
+		exceptionCount += 1
+		print('Success Count: ' + str(successCount) + '; Failure Count: ' + str(failureCount) + '; Exception Count: ' + str(exceptionCount))
+		pass
 
 	# Check for valid transmission
 	if AzureSender == 204: # Successful Post
@@ -62,12 +70,12 @@ while True:
 		print(timeStamp_str + '; Error Code: ' + str(AzureSender) + '; Create new sas')
 		device.create_sas(sasTimeOut)
 		print('New sas: ' + device._sas)
-		print('Success Count: ' + str(successCount) + '; Failure Count: ' + str(failureCount))
+		print('Success Count: ' + str(successCount) + '; Failure Count: ' + str(failureCount) + '; Exception Count: ' + str(exceptionCount))
 	
 	else: # Failed transmission, record code
 		failureCount += 1
 		print(timeStamp_str + '; Error Code: ' + str(AzureSender))
-		print('Success Count: ' + str(successCount) + '; Failure Count: ' + str(failureCount))
+		print('Success Count: ' + str(successCount) + '; Failure Count: ' + str(failureCount) + '; Exception Count: ' + str(exceptionCount))
 		
 	# print(timeStamp_str + '; Success Count: ' + str(successCount) + '; Failure Count: ' + str(failureCount))
 	time.sleep(30) # 1Hz upload rate
