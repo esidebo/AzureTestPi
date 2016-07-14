@@ -27,6 +27,6 @@ The descriptions for the error codes has been taken from [Mozilla Developer Netw
   - This error is received when the sas is not valid
 - 503: Service Unavailable - The server is not ready to handle the request
   - The origin of this error is at the server. The timing can not be predicted. This error means that the request did not go through.
-- Exception - ('Connection aborted.', gaierror(-2, 'Name or service not known'))
+- Exception: ConnectionError - ('Connection aborted.', gaierror(-2, 'Name or service not known'))
   - This exception seems to occur randomly during the transmission of the messge to Azure as part of the underlying library. Over a single 24 hour test, the exception occured 7 times.
   - The `device.send(message)` command should be housed in a `Try{} Except{}` to handle the exception
