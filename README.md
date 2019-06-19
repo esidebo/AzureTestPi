@@ -1,3 +1,5 @@
+## Playing around with AzureTestPi from DevMolasses https://github.com/DevMolasses/AzureTestPi, below is his/her README:
+
 # AzureTestPi
 This repository contains the files that will allow a raspberry pi to communicate with Azure IoT hub using REST APIs.
 ## Resources
